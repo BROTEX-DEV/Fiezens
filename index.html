@@ -2,79 +2,23 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#17212b">
-<meta name="description" content="Fiezens Messenger - پیام رسان سریع و مدرن">
-<title>Fiezens Messenger</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fiezens</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#0e1621;--panel:#17212b;--panel2:#202b36;--panel3:#243442;--text:#f1f5f9;--muted:#8b9aa8;--accent:#3390ec;--accent2:#2b7dcc;--bubble:#182533;--mine:#2b5278;--border:#2b3a47;--danger:#ef5350}
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}button,input{font:inherit}button{border:0;cursor:pointer;color:inherit}.app{height:100dvh;display:flex;overflow:hidden;background:var(--bg)}
-.sidebar{width:360px;min-width:300px;background:var(--panel);border-left:1px solid #101820;display:flex;flex-direction:column}.top{height:64px;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel)}.brand{font-weight:800;font-size:19px;flex:1}.icon{width:42px;height:42px;border-radius:50%;background:transparent;display:grid;place-items:center;font-size:21px}.icon:hover{background:var(--panel2)}
-.search{padding:0 12px 10px}.searchbox{height:42px;border-radius:9px;background:var(--panel2);display:flex;align-items:center;padding:0 12px;gap:8px}.searchbox input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:14px}.tabs{display:flex;padding:0 8px;border-bottom:1px solid var(--border)}.tab{flex:1;padding:12px 5px;background:transparent;color:var(--muted);font-size:13px}.tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}.chatlist{overflow:auto;flex:1}.chat{height:72px;padding:9px 12px;display:flex;gap:11px;align-items:center;cursor:pointer}.chat:hover,.chat.active{background:var(--panel2)}.avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;flex:none;background:linear-gradient(135deg,#3f8fdc,#6655c7);font-size:20px;font-weight:700}.chatmain{min-width:0;flex:1}.chatrow{display:flex;justify-content:space-between;gap:8px}.chatname{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.time{font-size:11px;color:var(--muted)}.preview{font-size:12px;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.badge{background:var(--accent);color:white;border-radius:12px;min-width:20px;height:20px;padding:0 6px;display:grid;place-items:center;font-size:11px}
-.main{flex:1;min-width:0;display:flex;flex-direction:column;background:#0e1621;position:relative}.empty{margin:auto;text-align:center;color:var(--muted)}.empty .big{font-size:64px;margin-bottom:15px}.empty h2{color:var(--text);margin:0 0 8px}.empty p{margin:0}
-.chathead{height:64px;background:var(--panel);display:flex;align-items:center;gap:11px;padding:7px 14px;border-bottom:1px solid var(--border)}.chathead .info{flex:1;min-width:0}.chathead .name{font-weight:700}.status{font-size:12px;color:var(--muted);margin-top:4px}.messages{flex:1;overflow:auto;padding:18px 7%;display:flex;flex-direction:column;gap:5px;background:radial-gradient(circle at 50% 0,#142331 0,#0e1621 45%)}.day{text-align:center;margin:8px auto 14px;background:#182632;color:#b7c5d0;padding:6px 12px;border-radius:12px;font-size:11px}.msg{max-width:min(680px,78%);align-self:flex-start;background:var(--bubble);border-radius:9px 9px 9px 3px;padding:8px 11px;box-shadow:0 1px 1px #0003}.msg.mine{align-self:flex-end;background:var(--mine);border-radius:9px 9px 3px 9px}.msgtext{white-space:pre-wrap;word-break:break-word;line-height:1.65}.meta{text-align:left;color:#9fb1c0;font-size:10px;margin-top:3px}.composer{padding:9px 14px 12px;background:var(--panel);display:flex;gap:8px;align-items:center}.composer input{flex:1;min-width:0;border:0;outline:0;background:var(--panel2);color:var(--text);border-radius:22px;padding:12px 17px}.send{width:44px;height:44px;border-radius:50%;background:var(--accent);font-size:20px}.send:hover{background:var(--accent2)}
-.overlay{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:20}.overlay.show{display:flex}.modal{width:min(430px,92vw);background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 20px 60px #0008}.modal h2{margin:0 0 18px}.field{margin:10px 0}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.field input{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:12px;outline:0}.primary{width:100%;padding:12px;border-radius:9px;background:var(--accent);font-weight:700;margin-top:10px}.secondary{width:100%;padding:10px;background:transparent;color:var(--muted);margin-top:7px}.note{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}.userbox{padding:12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}.userbox .uinfo{flex:1;min-width:0}.userbox small{color:var(--muted)}.logout{color:#ff7777;background:transparent;padding:8px}.mobile-back{display:none}
-@media(max-width:760px){.sidebar{width:100%;min-width:0}.main{display:none}.app.chat-open .sidebar{display:none}.app.chat-open .main{display:flex}.mobile-back{display:grid}.messages{padding:14px 3%}.msg{max-width:88%}}
+html,body{margin:0;width:100%;height:100%;background:#0e1621;color:#fff;font-family:Arial,Tahoma,sans-serif}
+body{display:grid;place-items:center}
+h1{margin:0;font-size:52px;font-weight:900;letter-spacing:-2px}
 </style>
 </head>
 <body>
-<div class="app" id="app">
-<aside class="sidebar">
-<header class="top">
-<button class="icon" id="menuBtn" title="منو">☰</button><div class="brand">Fiezens</div>
-<button class="icon" id="newBtn" title="گفتگوی جدید">✎</button>
-</header>
-<div class="search"><div class="searchbox">⌕<input id="search" placeholder="جستجو"></div></div>
-<nav class="tabs"><button class="tab active" data-tab="all">همه</button><button class="tab" data-tab="private">خصوصی</button><button class="tab" data-tab="groups">گروه ها</button></nav>
-<div class="chatlist" id="chatlist"></div>
-<div class="userbox"><div class="avatar" id="myAvatar">F</div><div class="uinfo"><b id="myName">مهمان</b><br><small id="myStatus">برای ورود کلیک کنید</small></div><button class="logout" id="authBtn">ورود</button></div>
-</aside>
-<main class="main">
-<div class="empty" id="empty"><div class="big">💬</div><h2>Fiezens Messenger</h2><p>یک گفتگو را انتخاب کنید</p></div>
-<section id="conversation" style="display:none;flex:1;min-height:0;flex-direction:column">
-<header class="chathead"><button class="icon mobile-back" id="backBtn">‹</button><div class="avatar" id="headAvatar">F</div><div class="info"><div class="name" id="headName">گفتگو</div><div class="status" id="headStatus">آنلاین</div></div><button class="icon" id="searchChat">⌕</button><button class="icon" id="moreBtn">⋮</button></header>
-<div class="messages" id="messages"></div>
-<form class="composer" id="composer"><button type="button" class="icon" id="attach">📎</button><input id="messageInput" autocomplete="off" placeholder="پیام..."><button class="send" title="ارسال">➤</button></form>
-</section>
-</main>
-</div>
-<div class="overlay" id="authModal"><div class="modal"><h2>ورود به Fiezens</h2><div class="field"><label>ایمیل</label><input id="email" type="email" placeholder="you@example.com"></div><div class="field"><label>رمز عبور</label><input id="password" type="password" placeholder="حداقل 6 کاراکتر"></div><button class="primary" id="loginBtn">ورود / ثبت نام</button><button class="secondary" id="closeAuth">بستن</button><div class="note">این نسخه برای اتصال به حساب های Supabase پروژه Fiezens آماده شده است.</div></div></div>
+<h1>Fiezens</h1>
 <script>
 const SUPABASE_URL="https://pwwicgyrycaexjnnhseb.supabase.co";
-const SUPABASE_KEY="sb_publishable_CiQbGJJx_WGbeGTPssoWYQ_kutyUJ9h";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const app=document.getElementById("app"), list=document.getElementById("chatlist"), empty=document.getElementById("empty"), conversation=document.getElementById("conversation"), messages=document.getElementById("messages");
-let session=null,current=null,profiles=[],publicMessages=[];
-const demo=[{id:"public",name:"گپ عمومی",preview:"گفتگوی عمومی Fiezens",type:"group",avatar:"🌐"}];
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function initials(n){return (n||"F").trim().slice(0,1).toUpperCase()}
-function renderList(){const q=document.getElementById("search").value.trim().toLowerCase();let rows=demo.concat(profiles.filter(p=>!session||p.id!==session.user.id).map(p=>({id:p.id,name:p.display_name||p.username,preview:"گفتگوی خصوصی",type:"private",avatar:initials(p.display_name||p.username)}))).filter(x=>!q||x.name.toLowerCase().includes(q));list.innerHTML=rows.map(x=>`<div class="chat ${current&&current.id===x.id?"active":""}" data-id="${esc(x.id)}" data-type="${x.type}"><div class="avatar">${x.avatar}</div><div class="chatmain"><div class="chatrow"><span class="chatname">${esc(x.name)}</span><span class="time"></span></div><div class="preview">${esc(x.preview)}</div></div></div>`).join("")||'<div style="padding:30px;text-align:center;color:#8b9aa8">نتیجه ای پیدا نشد</div>';list.querySelectorAll(".chat").forEach(el=>el.onclick=()=>openChat(el.dataset.id,el.dataset.type))}
-async function loadProfiles(){const {data,error}=await db.from("fiezens_profiles").select("id,username,display_name,avatar_url").order("display_name");if(!error)profiles=data||[];renderList()}
-function openChat(id,type){const item=id==="public"?demo[0]:profiles.find(p=>p.id===id);if(!item)return;current={id,type,name:item.name||item.display_name||item.username};document.getElementById("headName").textContent=current.name;document.getElementById("headAvatar").textContent=item.avatar||initials(current.name);document.getElementById("headStatus").textContent=type==="group"?"گفتگوی عمومی":"خصوصی";empty.style.display="none";conversation.style.display="flex";app.classList.add("chat-open");renderMessages()}
-async function renderMessages(){messages.innerHTML='<div class="day">امروز</div>';if(!current)return;if(current.type==="group"){const {data}=await db.from("fiezens_messages").select("id,nickname,content,created_at").eq("channel","لابی گیمرها").order("created_at",{ascending:true}).limit(100);if(data){publicMessages=data;data.forEach(m=>addMessage(m.content,m.nickname===getMyName(),m.created_at,m.nickname))}}else if(session){const {data}=await db.from("fiezens_private_messages").select("id,sender_id,receiver_id,content,created_at").or(`and(sender_id.eq.${session.user.id},receiver_id.eq.${current.id}),and(sender_id.eq.${current.id},receiver_id.eq.${session.user.id})`).order("created_at",{ascending:true}).limit(100);if(data)data.forEach(m=>addMessage(m.content,m.sender_id===session.user.id,m.created_at))}
-messages.scrollTop=messages.scrollHeight}
-function addMessage(text,mine,time,nick){const d=document.createElement("div");d.className="msg"+(mine?" mine":"");const t=time?new Date(time).toLocaleTimeString("fa-IR",{hour:"2-digit",minute:"2-digit"}):"";d.innerHTML=`<div class="msgtext">${esc(text)}</div><div class="meta">${nick&&!mine?esc(nick)+" · ":""}${t}${mine?" ✓✓":""}</div>`;messages.appendChild(d)}
-function getMyName(){return session?.user?.user_metadata?.display_name||session?.user?.email?.split("@")[0]||"Gamer"}
-async function sendMessage(text){if(!session){openAuth();return}if(!current||!text.trim())return;const content=text.trim();if(current.type==="group"){const {error}=await db.from("fiezens_messages").insert({channel:"لابی گیمرها",nickname:getMyName(),content});if(error)return alert("ارسال پیام انجام نشد")}else{const {error}=await db.from("fiezens_private_messages").insert({sender_id:session.user.id,receiver_id:current.id,content});if(error)return alert("ارسال پیام انجام نشد")}document.getElementById("messageInput").value="";await renderMessages()}
-async function refreshAuth(){const r=await db.auth.getSession();session=r.data.session||null;document.getElementById("myName").textContent=session?getMyName():"مهمان";document.getElementById("myStatus").textContent=session?"آنلاین":"برای ورود کلیک کنید";document.getElementById("authBtn").textContent=session?"خروج":"ورود";if(session){document.getElementById("myAvatar").textContent=initials(getMyName());await loadProfiles()}else{profiles=[];renderList()}}
-function openAuth(){document.getElementById("authModal").classList.add("show")}
-document.getElementById("authBtn").onclick=async()=>{if(session){await db.auth.signOut();current=null;conversation.style.display="none";empty.style.display="block";app.classList.remove("chat-open");await refreshAuth()}else openAuth()};
-document.getElementById("closeAuth").onclick=()=>document.getElementById("authModal").classList.remove("show");
-document.getElementById("loginBtn").onclick=async()=>{const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;if(!email||password.length<6)return alert("ایمیل و رمز معتبر وارد کنید");let r=await db.auth.signInWithPassword({email,password});if(r.error)r=await db.auth.signUp({email,password});if(r.error)return alert(r.error.message);document.getElementById("authModal").classList.remove("show");await refreshAuth()};
-document.getElementById("composer").onsubmit=e=>{e.preventDefault();sendMessage(document.getElementById("messageInput").value)};
-document.getElementById("search").oninput=renderList;
-document.getElementById("backBtn").onclick=()=>{app.classList.remove("chat-open");conversation.style.display="none";empty.style.display="block"};
-document.getElementById("newBtn").onclick=()=>session?alert("برای شروع گفتگوی خصوصی، یک کاربر را از فهرست انتخاب کنید."):openAuth();
-document.getElementById("menuBtn").onclick=()=>alert("منوی Fiezens در نسخه بعدی تکمیل می شود.");
-document.getElementById("attach").onclick=()=>alert("ارسال فایل در مرحله بعد به Storage متصل می شود.");
-document.getElementById("searchChat").onclick=()=>document.getElementById("messageInput").focus();
-document.getElementById("moreBtn").onclick=()=>alert("گزینه های گفتگو");
-document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active")});
-db.auth.onAuthStateChange(()=>setTimeout(refreshAuth,0));
-db.channel("fiezens-live").on("postgres_changes",{event:"*",schema:"public",table:"fiezens_messages"},()=>current?.type==="group"&&renderMessages()).on("postgres_changes",{event:"*",schema:"public",table:"fiezens_private_messages"},()=>current?.type==="private"&&renderMessages()).subscribe();
-refreshAuth();
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_CiQbGJJx_WGbeGTPssoWYQ_kutyUJ9h";
+const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+window.FiezensSupabase=supabase;
 </script>
-<!-- Fiezens Messenger v2.0.0 -->
+<!-- Fiezens v2.0.1 -->
 </body>
 </html>
