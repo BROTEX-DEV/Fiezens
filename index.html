@@ -26,7 +26,7 @@ footer{text-align:center;color:#4f5b70;font-size:9px;padding:12px}
 @media(max-width:900px){main{grid-template-columns:190px 1fr}.right{display:none}}
 @media(max-width:650px){header{height:62px;padding:0 12px}.logo{font-size:19px}.search{display:none}main{display:block;padding:8px}.sidebar{display:none}.chat{min-height:calc(100vh - 105px)}footer{display:none}.messages{padding:12px}.msg{max-width:88%}}
 </style>
-</head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>\n</head>
 <body>
 <div class="app">
 <header><div class="logo">فــایــزنـس <span>𝗙𝗶𝗲𝘇𝗲𝗻𝘀</span></div><div class="search"><input id="search" placeholder="جستجوی گیمر، گروه یا پیام..."></div></header>
@@ -47,25 +47,28 @@ footer{text-align:center;color:#4f5b70;font-size:9px;padding:12px}
 <div class="panel online"><b>آنلاین ها</b><div class="person"><i class="dot"></i> BROTEX <span class="muted">LV 42</span></div><div class="person"><i class="dot"></i> Nevar <span class="muted">LV 18</span></div><div class="person"><i class="dot"></i> PlayerOne <span class="muted">LV 11</span></div></div>
 </aside>
 </main>
-<footer>Fiezens · پیام رسان گیمری · نسخه 1.0.0</footer>
+<footer>Fiezens · پیام رسان گیمری · نسخه 1.0.1</footer>
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const key='fiezens-v1-messages', messages=document.getElementById('messages'), input=document.getElementById('message'), nameEl=document.getElementById('chatName'), toast=document.getElementById('toast');
+const SUPABASE_URL='https://pwwicgyrycaexjnnhseb.supabase.co'; const SUPABASE_KEY='sb_publishable_CiQbGJJx_WGbeGTPssoWYQ_kutyUJh9'; const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY); const nickname=localStorage.getItem('fiezens-nickname')||'Gamer'; const key='fiezens-v1-messages', messages=document.getElementById('messages'), input=document.getElementById('message'), nameEl=document.getElementById('chatName'), toast=document.getElementById('toast');
 let channel='لابی گیمرها';
 const defaults=[['BROТEX','بالاخره لابی فایزنس آماده شد 🎮'],['Nevar','سلام! اینجا میتونیم درباره بازی ها گپ بزنیم.']];
 function data(){try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{return {}}}
-function render(){let d=data(), list=d[channel]||defaults;messages.innerHTML=list.map((m,i)=>'<div class="msg '+(m[0]==='Gamer'?'me':'')+'"><div class="author">'+esc(m[0])+'</div>'+esc(m[1])+'</div>').join('');messages.scrollTop=messages.scrollHeight}
-function save(text){let d=data();d[channel]=d[channel]||defaults.slice();d[channel].push(['Gamer',text]);localStorage.setItem(key,JSON.stringify(d));render()}
+function render(list){list=list||[];if(!list.length)list=defaults.map(m=>({nickname:m[0],content:m[1],created_at:new Date().toISOString()}));messages.innerHTML=list.map(m=>'<div class="msg '+(m.nickname===nickname?'me':'')+'"><div class="author">'+esc(m.nickname)+'</div>'+esc(m.content)+'</div>').join('');messages.scrollTop=messages.scrollHeight}
+async function loadMessages(){const {data,error}=await supabase.from('fiezens_messages').select('id,channel,nickname,content,created_at').eq('channel',channel).order('created_at',{ascending:true}).limit(200);if(error){console.error(error);render();show('اتصال به سرور برقرار نشد')}else render(data)}
+async function save(text){const {error}=await supabase.from('fiezens_messages').insert({channel,nickname,content:text});if(error){console.error(error);show('ارسال پیام ناموفق بود')}else input.value='';}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function send(){let v=input.value.trim();if(!v)return;save(v);input.value=''}
+async function send(){let v=input.value.trim();if(!v)return;await save(v)}
 document.getElementById('send').onclick=send;input.onkeydown=e=>{if(e.key==='Enter')send()};
-document.querySelectorAll('.channel').forEach(x=>x.onclick=()=>{channel=x.dataset.channel;nameEl.textContent='🎮 '+channel;render()});
-document.getElementById('clear').onclick=()=>{let d=data();delete d[channel];localStorage.setItem(key,JSON.stringify(d));render();show('گفتگو پاک شد')};
+document.querySelectorAll('.channel').forEach(x=>x.onclick=()=>{channel=x.dataset.channel;nameEl.textContent='🎮 '+channel;loadMessages()});
+document.getElementById('clear').onclick=()=>loadMessages();
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');show('بخش «'+b.textContent.trim().replace(/^\S+\s*/,'')+'» به زودی کامل می شود')});
 document.getElementById('search').onkeydown=e=>{if(e.key==='Enter'&&e.target.value.trim())show('جستجو برای «'+e.target.value.trim()+'» آماده شد')};
 function show(t){toast.textContent=t;toast.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>toast.classList.remove('show'),1800)}
 render();
+supabase.channel('fiezens-live').on('postgres_changes',{event:'INSERT',schema:'public',table:'fiezens_messages'},payload=>{if(payload.new.channel===channel)loadMessages()}).subscribe();
+loadMessages();
 </script>
 </body>
 </html>
