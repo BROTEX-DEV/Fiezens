@@ -6,10 +6,11 @@
 <meta name="theme-color" content="#17212b">
 <meta name="description" content="Fiezens Messenger - پیام رسان سریع و مدرن">
 <title>Fiezens Messenger</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#0e1621;--panel:#17212b;--panel2:#202b36;--panel3:#243442;--text:#f1f5f9;--muted:#8b9aa8;--accent:#3390ec;--accent2:#2b7dcc;--bubble:#182533;--mine:#2b5278;--border:#2b3a47;--danger:#ef5350}
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}button,input{font:inherit}button{border:0;cursor:pointer;color:inherit}.app{height:100dvh;display:flex;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Vazirmatn,Tahoma,Arial,sans-serif}button,input{font:inherit}button{border:0;cursor:pointer;color:inherit}.app{height:100dvh;display:flex;overflow:hidden;background:var(--bg)}
 .sidebar{width:360px;min-width:300px;background:var(--panel);border-left:1px solid #101820;display:flex;flex-direction:column}.top{height:64px;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel)}.brand{font-weight:800;font-size:19px;flex:1}.icon{width:42px;height:42px;border-radius:50%;background:transparent;display:grid;place-items:center;font-size:21px}.icon:hover{background:var(--panel2)}
 .search{padding:0 12px 10px}.searchbox{height:42px;border-radius:9px;background:var(--panel2);display:flex;align-items:center;padding:0 12px;gap:8px}.searchbox input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:14px}.tabs{display:flex;padding:0 8px;border-bottom:1px solid var(--border)}.tab{flex:1;padding:12px 5px;background:transparent;color:var(--muted);font-size:13px}.tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}.chatlist{overflow:auto;flex:1}.chat{height:72px;padding:9px 12px;display:flex;gap:11px;align-items:center;cursor:pointer}.chat:hover,.chat.active{background:var(--panel2)}.avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;flex:none;background:linear-gradient(135deg,#3f8fdc,#6655c7);font-size:20px;font-weight:700}.chatmain{min-width:0;flex:1}.chatrow{display:flex;justify-content:space-between;gap:8px}.chatname{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.time{font-size:11px;color:var(--muted)}.preview{font-size:12px;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.badge{background:var(--accent);color:white;border-radius:12px;min-width:20px;height:20px;padding:0 6px;display:grid;place-items:center;font-size:11px}
 .main{flex:1;min-width:0;display:flex;flex-direction:column;background:#0e1621;position:relative}.empty{margin:auto;text-align:center;color:var(--muted)}.empty .big{font-size:64px;margin-bottom:15px}.empty h2{color:var(--text);margin:0 0 8px}.empty p{margin:0}
@@ -75,6 +76,6 @@ db.auth.onAuthStateChange(()=>setTimeout(refreshAuth,0));
 db.channel("fiezens-live").on("postgres_changes",{event:"*",schema:"public",table:"fiezens_messages"},()=>current?.type==="group"&&renderMessages()).on("postgres_changes",{event:"*",schema:"public",table:"fiezens_private_messages"},()=>current?.type==="private"&&renderMessages()).subscribe();
 refreshAuth();
 </script>
-<!-- Fiezens Messenger v2.0.2 -->
+<!-- Fiezens Messenger v2.0.3 -->
 </body>
 </html>
