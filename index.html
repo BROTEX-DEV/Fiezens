@@ -95,6 +95,25 @@ async function renderMessages(){
   }
   messages.scrollTop=messages.scrollHeight
 }
+function addMessage(m,mine){
+  const d=document.createElement("div");
+  d.className="msg"+(mine?" mine":"");
+  d.dataset.id=m.id;
+  d.dataset.type=current.type;
+  const t=m.created_at?new Date(m.created_at).toLocaleTimeString("fa-IR",{hour:"2-digit",minute:"2-digit"}):"";
+  const deleted=Boolean(m.deleted_at);
+  const reply=m.reply_to_id?'<div style="border-right:3px solid var(--accent);padding:4px 8px;margin-bottom:6px;color:#b7c5d0;font-size:11px">↩️ پاسخ به پیام</div>':"";
+  d.innerHTML=reply+`<div class="msgtext">${deleted?'<i style="color:var(--muted)">پیام حذف شد</i>':esc(m.content)}</div><div class="meta">${m.nickname&&!mine?esc(m.nickname)+" · ":""}${t}${mine?" ✓✓":""}</div>`;
+  if(!deleted){
+    let timer=null;
+    const clear=()=>{if(timer){clearTimeout(timer);timer=null}};
+    d.addEventListener("contextmenu",e=>{e.preventDefault();openMessageMenu(e.clientX,e.clientY,m,mine)});
+    d.addEventListener("pointerdown",e=>{clear();timer=setTimeout(()=>{timer=null;openMessageMenu(e.clientX,e.clientY,m,mine)},550)});
+    d.addEventListener("pointerup",clear);
+    d.addEventListener("pointercancel",clear);
+  }
+  messages.appendChild(d);
+}
 function getMyName(){return session?.user?.user_metadata?.display_name||session?.user?.email?.split("@")[0]||"Gamer"}
 async function sendMessage(text){if(!session){openAuth();return}if(!current||!text.trim())return;const content=text.trim();const replyId=replyTarget?.id||null;let error;if(current.type==="group"){({error}=await db.from("fiezens_messages").insert({channel:"لابی گیمرها",nickname:getMyName(),sender_id:session.user.id,content,reply_to_id:replyId}))}else{({error}=await db.from("fiezens_private_messages").insert({sender_id:session.user.id,receiver_id:current.id,content,reply_to_id:replyId}))}if(error){console.error(error);return alert("ارسال پیام انجام نشد: "+error.message)}document.getElementById("messageInput").value="";cancelReply();await renderMessages()}
 async function refreshAuth(){
