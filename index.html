@@ -62,39 +62,149 @@ footer{text-align:center;color:#4f5b70;font-size:9px;padding:12px}
   </div>
 </div>
 <script>
-const SUPABASE_URL='https://pwwicgyrycaexjnnhseb.supabase.co'; const SUPABASE_KEY='sb_publishable_CiQbGJJx_WGbeGTPssoWYQ_kutyUJh9'; const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY); let session=null, profile=null, privateMode=false, privateUser=null; const nickname=localStorage.getItem('fiezens-nickname')||'Gamer'; const key='fiezens-v1-messages', messages=document.getElementById('messages'), input=document.getElementById('message'), nameEl=document.getElementById('chatName'), toast=document.getElementById('toast');
-let channel='لابی گیمرها';
-const defaults=[['BROТEX','بالاخره لابی فایزنس آماده شد 🎮'],['Nevar','سلام! اینجا میتونیم درباره بازی ها گپ بزنیم.']];
-function data(){try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{return {}}}
-function render(list){list=list||[];if(!list.length)list=defaults.map(m=>({nickname:m[0],content:m[1],created_at:new Date().toISOString()}));messages.innerHTML=list.map(m=>'<div class="msg '+(m.nickname===nickname?'me':'')+'"><div class="author">'+esc(m.nickname)+'</div>'+esc(m.content)+'</div>').join('');messages.scrollTop=messages.scrollHeight}
-async function loadMessages(){privateMode=false;const {data,error}=await supabase.from('fiezens_messages').select('id,channel,nickname,content,created_at').eq('channel',channel).order('created_at',{ascending:true}).limit(200);if(error){console.error(error);render();show('اتصال به سرور برقرار نشد')}else render(data)}
-async function loadProfile(){const {data}=await supabase.auth.getSession();session=data.session;if(!session){profile=null;setProfile();return} const r=await supabase.from('fiezens_profiles').select('*').eq('id',session.user.id).maybeSingle();profile=r.data;setProfile();loadPeople()}
-function setProfile(){const p=profile||{};document.getElementById('profileName').textContent=p.display_name||'مهمان';document.getElementById('profileUser').textContent=p.username?'@'+p.username:'وارد نشده';document.getElementById('levelText').textContent='Level '+(p.level||1);document.getElementById('xpText').textContent=(p.xp||0)+' XP';document.getElementById('xpBar').style.width=Math.min(100,(p.xp||0)%1000/10)+'%';document.getElementById('authBtn').textContent=session?'خروج':'ورود / ثبت نام'}
-async function loadPeople(){const r=await supabase.from('fiezens_profiles').select('id,username,display_name,level').order('display_name').limit(30);const box=document.getElementById('people');box.innerHTML=(r.data||[]).filter(p=>p.id!==session?.user?.id).map(p=>'<div class="person userline" data-id="'+p.id+'"><i class="dot"></i> '+esc(p.display_name)+' <span class="muted">@'+esc(p.username)+' · LV '+p.level+'</span></div>').join('')||'<div class="muted" style="padding-top:10px">کاربر دیگری پیدا نشد.</div>';box.querySelectorAll('.userline').forEach(el=>el.onclick=()=>openPrivate(el.dataset.id))}
-async function openPrivate(id){if(!session){show('ابتدا وارد حساب شو');openAuth();return} const r=await supabase.from('fiezens_profiles').select('id,username,display_name').eq('id',id).single();if(r.error)return;privateMode=true;privateUser=r.data;document.getElementById('chatName').textContent='💬 '+privateUser.display_name;await loadPrivate()}
-async function loadPrivate(){if(!privateUser||!session)return;const a=session.user.id,b=privateUser.id;const r=await supabase.from('fiezens_private_messages').select('id,sender_id,receiver_id,content,created_at').or('and(sender_id.eq.'+a+',receiver_id.eq.'+b+'),and(sender_id.eq.'+b+',receiver_id.eq.'+a+')').order('created_at',{ascending:true}).limit(200);messages.innerHTML=(r.data||[]).map(m=>'<div class="msg '+(m.sender_id===a?'me':'')+'"><div class="author">'+(m.sender_id===a?'من':'از '+esc(privateUser.display_name))+'</div>'+esc(m.content)+'</div>').join('');messages.scrollTop=messages.scrollHeight}
-async function auth(mode){const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value,username=document.getElementById('authUsername').value.trim()||'gamer';if(!email||!password){show('ایمیل و رمز عبور را وارد کن');return}let r;if(mode==='login')r=await supabase.auth.signInWithPassword({email,password});else r=await supabase.auth.signUp({email,password,options:{data:{username,display_name:username}}});if(r.error){show(r.error.message);return}document.getElementById('authBox').classList.remove('show');await loadProfile();show(mode==='login'?'وارد شدی':'حساب ساخته شد')}
-function openAuth(){document.getElementById('authBox').classList.add('show')}
-async function save(text){if(privateMode){if(!session){show('ابتدا وارد حساب شو');return}const {error}=await supabase.from('fiezens_private_messages').insert({sender_id:session.user.id,receiver_id:privateUser.id,content:text});if(error)show('ارسال پیام خصوصی ناموفق بود');else{input.value='';await loadPrivate()}return}const {error}=await supabase.from('fiezens_messages').insert({channel,nickname:profile?.display_name||nickname,content:text});if(error){console.error(error);show('ارسال پیام ناموفق بود')}else input.value='';}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-async function send(){let v=input.value.trim();if(!v)return;await save(v)}
-document.getElementById('send').onclick=send;input.onkeydown=e=>{if(e.key==='Enter')send()};
-document.querySelectorAll('.channel').forEach(x=>x.onclick=()=>{privateMode=false;channel=x.dataset.channel;nameEl.textContent='🎮 '+channel;loadMessages()});
-document.getElementById('authBtn').onclick=async()=>{if(session){await supabase.auth.signOut();session=null;profile=null;setProfile();show('از حساب خارج شدی')}else openAuth()};
-document.getElementById('loginBtn').onclick=()=>auth('login');document.getElementById('signupBtn').onclick=()=>auth('signup');document.getElementById('closeAuth').onclick=()=>document.getElementById('authBox').classList.remove('show');
-document.getElementById('clear').onclick=()=>loadMessages();
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  if(b.dataset.view==='friends'){loadPeople();show('برای شروع روی یک بازیکن بزن')}
-  else show('بخش «'+b.textContent.trim().replace(/^\S+\s*/,'')+'» به زودی کامل می شود');
+const SUPABASE_URL='https://pwwicgyrycaexjnnhseb.supabase.co';
+const SUPABASE_KEY='sb_publishable_CiQbGJJx_WGbeGTPssoWYQ_kutyUJh9';
+let supabaseClient=null,session=null,profile=null,privateMode=false,privateUser=null,channel='لابی گیمرها';
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=id=>document.getElementById(id);
+  const messages=$('messages'),input=$('message'),toast=$('toast'),nameEl=$('chatName');
+  const nickname=localStorage.getItem('fiezens-nickname')||'Gamer';
+
+  function show(t){toast.textContent=t;toast.classList.add('show');clearTimeout(window.fzToast);window.fzToast=setTimeout(()=>toast.classList.remove('show'),1800)}
+  function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function render(list=[]){
+    if(!list.length) list=[{nickname:'BROТEX',content:'بالاخره لابی فایزنس آماده شد 🎮'},{nickname:'Nevar',content:'سلام! اینجا میتونیم درباره بازی ها گپ بزنیم.'}];
+    messages.innerHTML=list.map(m=>'<div class="msg '+(m.nickname===(profile?.display_name||nickname)?'me':'')+'"><div class="author">'+esc(m.nickname)+'</div>'+esc(m.content)+'</div>').join('');
+    messages.scrollTop=messages.scrollHeight;
+  }
+
+  function setProfile(){
+    const p=profile||{};
+    $('profileName').textContent=p.display_name||'مهمان';
+    $('profileUser').textContent=p.username?'@'+p.username:'وارد نشده';
+    $('levelText').textContent='Level '+(p.level||1);
+    $('xpText').textContent=(p.xp||0)+' XP';
+    $('xpBar').style.width=Math.min(100,((p.xp||0)%1000)/10)+'%';
+    $('authBtn').textContent=session?'خروج':'ورود / ثبت نام';
+  }
+
+  function openAuth(){ $('authBox').classList.add('show'); $('authEmail').focus(); }
+
+  async function connect(){
+    if(!window.supabase?.createClient){show('در حال اتصال به سرویس...');return false}
+    if(!supabaseClient) supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    return true;
+  }
+
+  async function loadMessages(){
+    if(privateMode)return;
+    if(!await connect()){render();return}
+    const r=await supabaseClient.from('fiezens_messages').select('id,channel,nickname,content,created_at').eq('channel',channel).order('created_at',{ascending:true}).limit(200);
+    if(r.error){render();show('اتصال به سرور برقرار نشد');return}
+    render(r.data||[]);
+  }
+
+  async function loadProfile(){
+    if(!await connect())return;
+    const r=await supabaseClient.auth.getSession();
+    session=r.data?.session||null;
+    if(!session){profile=null;setProfile();return}
+    const p=await supabaseClient.from('fiezens_profiles').select('*').eq('id',session.user.id).maybeSingle();
+    profile=p.data||null;setProfile();loadPeople();
+  }
+
+  async function loadPeople(){
+    if(!await connect())return;
+    const r=await supabaseClient.from('fiezens_profiles').select('id,username,display_name,level').order('display_name').limit(30);
+    const box=$('people');
+    box.innerHTML=(r.data||[]).filter(p=>p.id!==session?.user?.id).map(p=>'<div class="person userline" data-id="'+esc(p.id)+'"><i class="dot"></i> '+esc(p.display_name)+' <span class="muted">@'+esc(p.username)+' · LV '+p.level+'</span></div>').join('')||'<div class="muted" style="padding-top:10px">کاربر دیگری پیدا نشد.</div>';
+    box.querySelectorAll('.userline').forEach(el=>el.addEventListener('click',()=>openPrivate(el.dataset.id)));
+  }
+
+  async function openPrivate(id){
+    if(!session){show('ابتدا وارد حساب شو');openAuth();return}
+    const r=await supabaseClient.from('fiezens_profiles').select('id,username,display_name').eq('id',id).single();
+    if(r.error){show('کاربر پیدا نشد');return}
+    privateMode=true;privateUser=r.data;nameEl.textContent='💬 '+privateUser.display_name;await loadPrivate();
+  }
+
+  async function loadPrivate(){
+    if(!privateMode||!privateUser||!session)return;
+    const a=session.user.id,b=privateUser.id;
+    const r=await supabaseClient.from('fiezens_private_messages').select('id,sender_id,receiver_id,content,created_at').or('and(sender_id.eq.'+a+',receiver_id.eq.'+b+'),and(sender_id.eq.'+b+',receiver_id.eq.'+a+')').order('created_at',{ascending:true}).limit(200);
+    if(r.error){show('چت خصوصی در دسترس نیست');return}
+    messages.innerHTML=(r.data||[]).map(m=>'<div class="msg '+(m.sender_id===a?'me':'')+'"><div class="author">'+(m.sender_id===a?'من':'از '+esc(privateUser.display_name))+'</div>'+esc(m.content)+'</div>').join('');
+    messages.scrollTop=messages.scrollHeight;
+  }
+
+  async function auth(mode){
+    if(!await connect())return;
+    const email=$('authEmail').value.trim(),password=$('authPassword').value,username=$('authUsername').value.trim()||'gamer';
+    if(!email||!password){show('ایمیل و رمز عبور را وارد کن');return}
+    const r=mode==='login'
+      ? await supabaseClient.auth.signInWithPassword({email,password})
+      : await supabaseClient.auth.signUp({email,password,options:{data:{username,display_name:username}}});
+    if(r.error){show(r.error.message);return}
+    $('authBox').classList.remove('show');await loadProfile();show(mode==='login'?'وارد شدی':'حساب ساخته شد');
+  }
+
+  async function send(){
+    const text=input.value.trim();if(!text)return;
+    if(!await connect())return;
+    if(privateMode){
+      if(!session||!privateUser){show('ابتدا وارد حساب شو');return}
+      const r=await supabaseClient.from('fiezens_private_messages').insert({sender_id:session.user.id,receiver_id:privateUser.id,content:text});
+      if(r.error)show('ارسال پیام خصوصی ناموفق بود');else{input.value='';await loadPrivate()}
+      return;
+    }
+    const r=await supabaseClient.from('fiezens_messages').insert({channel,nickname:profile?.display_name||nickname,content:text});
+    if(r.error)show('ارسال پیام ناموفق بود');else input.value='';
+  }
+
+  $('send').addEventListener('click',send);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send()}});
+  $('authBtn').addEventListener('click',async()=>{
+    if(!session){openAuth();return}
+    if(await connect())await supabaseClient.auth.signOut();
+    session=null;profile=null;privateMode=false;privateUser=null;setProfile();show('از حساب خارج شدی');
+  });
+  $('loginBtn').addEventListener('click',()=>auth('login'));
+  $('signupBtn').addEventListener('click',()=>auth('signup'));
+  $('closeAuth').addEventListener('click',()=>$('authBox').classList.remove('show'));
+  $('authBox').addEventListener('click',e=>{if(e.target.id==='authBox')$('authBox').classList.remove('show')});
+  $('clear').addEventListener('click',loadMessages);
+
+  document.querySelectorAll('.channel').forEach(el=>el.addEventListener('click',()=>{
+    privateMode=false;privateUser=null;channel=el.dataset.channel;nameEl.textContent='🎮 '+channel;loadMessages();
+  }));
+
+  document.querySelectorAll('.nav button').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    if(btn.dataset.view==='friends'){loadPeople();show('برای شروع روی یک بازیکن بزن')}
+    else show('بخش «'+btn.textContent.trim().replace(/^\S+\s*/,'')+'» به زودی کامل می شود');
+  }));
+
+  $('search').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.value.trim())show('جستجو برای «'+e.target.value.trim()+'» آماده شد')});
+
+  setProfile();
+  render();
+  loadMessages();
+  loadProfile();
+
+  const waitForSupabase=setInterval(()=>{
+    if(window.supabase?.createClient){
+      clearInterval(waitForSupabase);
+      connect().then(()=>{
+        supabaseClient.channel('fiezens-live').on('postgres_changes',{event:'INSERT',schema:'public',table:'fiezens_messages'},p=>{if(!privateMode&&p.new.channel===channel)loadMessages()}).subscribe();
+        supabaseClient.channel('fiezens-private-live').on('postgres_changes',{event:'INSERT',schema:'public',table:'fiezens_private_messages'},p=>{if(privateMode&&session&&(p.new.sender_id===session.user.id||p.new.receiver_id===session.user.id))loadPrivate()}).subscribe();
+        loadProfile();
+      });
+    }
+  },250);
+  setTimeout(()=>clearInterval(waitForSupabase),10000);
 });
-document.getElementById('search').onkeydown=e=>{if(e.key==='Enter'&&e.target.value.trim())show('جستجو برای «'+e.target.value.trim()+'» آماده شد')};
-function show(t){toast.textContent=t;toast.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>toast.classList.remove('show'),1800)}
-render();
-supabase.channel('fiezens-live').on('postgres_changes',{event:'INSERT',schema:'public',table:'fiezens_messages'},payload=>{if(!privateMode&&payload.new.channel===channel)loadMessages()}).subscribe();
-supabase.channel('fiezens-private-live').on('postgres_changes',{event:'INSERT',schema:'public',table:'fiezens_private_messages'},payload=>{if(privateMode&&session&&(payload.new.sender_id===session.user.id||payload.new.receiver_id===session.user.id))loadPrivate()}).subscribe();
-loadProfile();loadMessages();
 </script>
 </body>
 </html>
