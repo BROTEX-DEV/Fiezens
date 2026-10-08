@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b12">
+<meta name="description" content="فایزنس؛ پیام رسان گیمری مدرن برای گفتگو، گروه و ارتباط با گیمرها.">
+<title>فایزنس | Fiezens</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#070a10;color:#eef2ff;font-family:Tahoma,Arial,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer}
+:root{--card:#0d121c;--line:#1b2434;--muted:#8d99ad;--accent:#7c5cff;--accent2:#00d4ff}
+.app{max-width:1200px;margin:auto;min-height:100vh;display:flex;flex-direction:column}
+header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;padding:0 22px;position:sticky;top:0;background:#080b12ee;backdrop-filter:blur(16px);z-index:5}
+.logo{font-weight:900;font-size:25px;letter-spacing:.5px}.logo span{color:var(--accent)}
+.search{flex:1;max-width:430px;margin-right:auto}.search input{width:100%;background:#0c111b;border:1px solid var(--line);border-radius:13px;padding:11px 15px;color:white;outline:none}.search input:focus{border-color:var(--accent)}
+main{display:grid;grid-template-columns:235px 1fr 250px;gap:14px;padding:14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.sidebar{padding:12px}.nav{display:grid;gap:7px}.nav button{background:transparent;border:0;color:#aeb8ca;text-align:right;padding:12px;border-radius:11px}.nav button.active,.nav button:hover{background:#151b2a;color:white}
+.channels{margin-top:18px}.caption{font-size:11px;color:#657187;padding:8px 10px}.channel{padding:10px;border-radius:10px;color:#aab5c8;cursor:pointer}.channel:hover{background:#121927;color:white}
+.chat{min-height:620px;display:flex;flex-direction:column}.chathead{padding:17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.chatname{font-weight:bold}.status{font-size:11px;color:#48df9b;margin-top:4px}
+.messages{flex:1;padding:18px;display:flex;flex-direction:column;gap:12px;overflow:auto}.msg{max-width:75%;padding:11px 14px;border:1px solid var(--line);background:#111722;border-radius:15px 15px 4px 15px;align-self:flex-start}.msg.me{align-self:flex-end;background:#17132b;border-color:#30265c;border-radius:15px 15px 15px 4px}.author{font-size:11px;color:#9c8cff;margin-bottom:5px}.composer{padding:12px;border-top:1px solid var(--line);display:flex;gap:8px}.composer input{flex:1;background:#090d15;border:1px solid var(--line);border-radius:12px;padding:12px;color:white;outline:0}.send{border:0;background:linear-gradient(135deg,var(--accent),#5a39d7);color:white;border-radius:12px;padding:0 18px;font-weight:bold}
+.profile{padding:18px;text-align:center}.avatar{width:74px;height:74px;border-radius:22px;margin:5px auto 12px;background:linear-gradient(135deg,#7c5cff,#00d4ff);display:grid;place-items:center;font-size:27px;font-weight:900}.level{margin-top:14px;background:#111722;border-radius:12px;padding:11px;text-align:right}.bar{height:6px;background:#252d3c;border-radius:8px;margin-top:8px;overflow:hidden}.bar i{display:block;width:64%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.online{margin-top:14px;padding:15px}.person{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #151d2a}.dot{width:8px;height:8px;border-radius:50%;background:#43df98}.muted{color:var(--muted);font-size:12px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;background:#151c29;border:1px solid #29354b;padding:11px 17px;border-radius:12px;transition:.25s;z-index:20}.toast.show{opacity:1;transform:translateX(-50%)}
+footer{text-align:center;color:#4f5b70;font-size:9px;padding:12px}
+@media(max-width:900px){main{grid-template-columns:190px 1fr}.right{display:none}}
+@media(max-width:650px){header{height:62px;padding:0 12px}.logo{font-size:19px}.search{display:none}main{display:block;padding:8px}.sidebar{display:none}.chat{min-height:calc(100vh - 105px)}footer{display:none}.messages{padding:12px}.msg{max-width:88%}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">فــایــزنـس <span>𝗙𝗶𝗲𝘇𝗲𝗻𝘀</span></div><div class="search"><input id="search" placeholder="جستجوی گیمر، گروه یا پیام..."></div></header>
+<main>
+<aside class="panel sidebar">
+<div class="nav">
+<button class="active" data-view="messages">💬 پیام ها</button><button data-view="friends">👥 دوستان</button><button data-view="notifications">🔔 اعلان ها</button><button data-view="achievements">🏆 دستاوردها</button>
+</div>
+<div class="channels"><div class="caption">کانال ها</div><div class="channel" data-channel="لابی گیمرها">🎮 لابی گیمرها</div><div class="channel" data-channel="Minecraft">⛏️ Minecraft</div><div class="channel" data-channel="Valorant">🎯 Valorant</div><div class="channel" data-channel="گپ آزاد">🔥 گپ آزاد</div></div>
+</aside>
+<section class="panel chat">
+<div class="chathead"><div><div class="chatname" id="chatName">🎮 لابی گیمرها</div><div class="status">● آنلاین · گفتگوی عمومی</div></div><button id="clear" style="background:transparent;color:#8d99ad;border:0">پاک کردن</button></div>
+<div class="messages" id="messages"></div>
+<div class="composer"><input id="message" placeholder="پیامت را بنویس..."><button class="send" id="send">ارسال</button></div>
+</section>
+<aside class="right">
+<div class="panel profile"><div class="avatar">FZ</div><b>Gamer</b><div class="muted">بازیکن تازه وارد فایزنس</div><div class="level"><b>Level 7</b><span class="muted" style="float:left">640 / 1000 XP</span><div class="bar"><i></i></div></div></div>
+<div class="panel online"><b>آنلاین ها</b><div class="person"><i class="dot"></i> BROTEX <span class="muted">LV 42</span></div><div class="person"><i class="dot"></i> Nevar <span class="muted">LV 18</span></div><div class="person"><i class="dot"></i> PlayerOne <span class="muted">LV 11</span></div></div>
+</aside>
+</main>
+<footer>Fiezens · پیام رسان گیمری · نسخه 1.0.0</footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const key='fiezens-v1-messages', messages=document.getElementById('messages'), input=document.getElementById('message'), nameEl=document.getElementById('chatName'), toast=document.getElementById('toast');
+let channel='لابی گیمرها';
+const defaults=[['BROТEX','بالاخره لابی فایزنس آماده شد 🎮'],['Nevar','سلام! اینجا میتونیم درباره بازی ها گپ بزنیم.']];
+function data(){try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{return {}}}
+function render(){let d=data(), list=d[channel]||defaults;messages.innerHTML=list.map((m,i)=>'<div class="msg '+(m[0]==='Gamer'?'me':'')+'"><div class="author">'+esc(m[0])+'</div>'+esc(m[1])+'</div>').join('');messages.scrollTop=messages.scrollHeight}
+function save(text){let d=data();d[channel]=d[channel]||defaults.slice();d[channel].push(['Gamer',text]);localStorage.setItem(key,JSON.stringify(d));render()}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function send(){let v=input.value.trim();if(!v)return;save(v);input.value=''}
+document.getElementById('send').onclick=send;input.onkeydown=e=>{if(e.key==='Enter')send()};
+document.querySelectorAll('.channel').forEach(x=>x.onclick=()=>{channel=x.dataset.channel;nameEl.textContent='🎮 '+channel;render()});
+document.getElementById('clear').onclick=()=>{let d=data();delete d[channel];localStorage.setItem(key,JSON.stringify(d));render();show('گفتگو پاک شد')};
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');show('بخش «'+b.textContent.trim().replace(/^\S+\s*/,'')+'» به زودی کامل می شود')});
+document.getElementById('search').onkeydown=e=>{if(e.key==='Enter'&&e.target.value.trim())show('جستجو برای «'+e.target.value.trim()+'» آماده شد')};
+function show(t){toast.textContent=t;toast.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>toast.classList.remove('show'),1800)}
+render();
+</script>
+</body>
+</html>
