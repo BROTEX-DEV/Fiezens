@@ -47,9 +47,20 @@ footer{text-align:center;color:#4f5b70;font-size:9px;padding:12px}
 <div class="panel online"><b id="onlineTitle">بازیکنان</b><div id="people"><div class="person"><i class="dot"></i> در حال بارگذاری...</div></div></div>
 </aside>
 </main>
-<footer>Fiezens · پیام رسان گیمری · نسخه 1.0.2</footer>
+<footer>Fiezens · پیام رسان گیمری · نسخه 1.0.3</footer>
 </div>
 <div class="toast" id="toast"></div>
+<div class="authbox" id="authBox">
+  <div class="authcard">
+    <h2>ورود به فایزنس</h2>
+    <div class="muted">برای استفاده از حساب و چت خصوصی وارد شو.</div>
+    <input id="authEmail" type="email" placeholder="ایمیل">
+    <input id="authPassword" type="password" placeholder="رمز عبور">
+    <input id="authUsername" type="text" placeholder="نام کاربری (برای ثبت نام)">
+    <div class="authactions"><button class="primary" id="loginBtn">ورود</button><button class="secondary" id="signupBtn">ثبت نام</button></div>
+    <button class="logout" id="closeAuth">بستن</button>
+  </div>
+</div>
 <script>
 const SUPABASE_URL='https://pwwicgyrycaexjnnhseb.supabase.co'; const SUPABASE_KEY='sb_publishable_CiQbGJJx_WGbeGTPssoWYQ_kutyUJh9'; const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY); let session=null, profile=null, privateMode=false, privateUser=null; const nickname=localStorage.getItem('fiezens-nickname')||'Gamer'; const key='fiezens-v1-messages', messages=document.getElementById('messages'), input=document.getElementById('message'), nameEl=document.getElementById('chatName'), toast=document.getElementById('toast');
 let channel='لابی گیمرها';
@@ -71,9 +82,13 @@ document.getElementById('send').onclick=send;input.onkeydown=e=>{if(e.key==='Ent
 document.querySelectorAll('.channel').forEach(x=>x.onclick=()=>{privateMode=false;channel=x.dataset.channel;nameEl.textContent='🎮 '+channel;loadMessages()});
 document.getElementById('authBtn').onclick=async()=>{if(session){await supabase.auth.signOut();session=null;profile=null;setProfile();show('از حساب خارج شدی')}else openAuth()};
 document.getElementById('loginBtn').onclick=()=>auth('login');document.getElementById('signupBtn').onclick=()=>auth('signup');document.getElementById('closeAuth').onclick=()=>document.getElementById('authBox').classList.remove('show');
-document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='friends'){loadPeople();show('برای شروع روی یک بازیکن بزن')} }));
 document.getElementById('clear').onclick=()=>loadMessages();
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');show('بخش «'+b.textContent.trim().replace(/^\S+\s*/,'')+'» به زودی کامل می شود')});
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  if(b.dataset.view==='friends'){loadPeople();show('برای شروع روی یک بازیکن بزن')}
+  else show('بخش «'+b.textContent.trim().replace(/^\S+\s*/,'')+'» به زودی کامل می شود');
+});
 document.getElementById('search').onkeydown=e=>{if(e.key==='Enter'&&e.target.value.trim())show('جستجو برای «'+e.target.value.trim()+'» آماده شد')};
 function show(t){toast.textContent=t;toast.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>toast.classList.remove('show'),1800)}
 render();
