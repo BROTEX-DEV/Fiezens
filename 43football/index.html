@@ -24,8 +24,37 @@ nav{display:flex;align-items:center;gap:5px}nav button{background:transparent;bo
 footer{border-top:1px solid #ffffff12;padding:20px 0 28px;display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:10px}.footer-brand{color:var(--green);font-weight:900;letter-spacing:1px}
 @media(max-width:760px){header{height:auto;min-height:72px;flex-wrap:wrap;padding:13px 0}.live{display:none}nav{width:100%;order:3;justify-content:space-between}nav button{flex:1;padding:9px 4px;font-size:11px}.hero{grid-template-columns:1fr;padding:35px 0 25px;gap:22px}.hero h1{font-size:49px}.visual{height:220px}.stats{grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:35px}.stat{padding:13px}.stat strong{font-size:25px}.matches{grid-template-columns:1fr}.teams-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-head{align-items:start;flex-direction:column}.section-title{font-size:20px}}
 @media(max-width:420px){.container{width:calc(100% - 24px)}.hero h1{font-size:42px}.teams-grid{grid-template-columns:1fr}.brand-name{font-size:15px}}
+
+/* Cinematic football entrance */
+#intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at center,#123c27 0%,#07170f 58%,#030906 100%);transition:opacity .65s ease,visibility .65s ease}
+#intro.hide{opacity:0;visibility:hidden;pointer-events:none}
+.intro-content{position:relative;z-index:2;text-align:center;width:min(88vw,520px)}
+.intro-brand{font-size:clamp(32px,8vw,58px);font-weight:900;letter-spacing:3px;color:#f1f8f3;text-shadow:0 0 30px #8cf0ad35}
+.intro-brand span{color:#8cf0ad}
+.intro-sub{margin-top:8px;color:#a8c5b2;font-size:12px;letter-spacing:3px}
+.intro-pitch{height:145px;position:relative;margin:22px auto 8px;width:min(82vw,390px);border:1px solid #8cf0ad55;border-radius:8px;background:linear-gradient(90deg,#0c2c1a,#17462b,#0c2c1a);box-shadow:inset 0 0 45px #0005,0 0 50px #8cf0ad12}
+.intro-pitch:before{content:"";position:absolute;left:50%;top:0;height:100%;border-left:1px solid #c5ff7860}
+.intro-pitch:after{content:"";position:absolute;width:70px;height:70px;border:1px solid #c5ff7860;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+.intro-goal{position:absolute;right:-1px;top:38px;width:28px;height:68px;border:2px solid #c5ff78;border-right:0;background:repeating-linear-gradient(0deg,transparent 0 8px,#c5ff7830 9px 10px),repeating-linear-gradient(90deg,transparent 0 8px,#c5ff7830 9px 10px)}
+.intro-ball{position:absolute;z-index:2;left:8%;top:50%;width:30px;height:30px;border-radius:50%;background:#f5fff7;color:#102719;display:grid;place-items:center;box-shadow:0 0 20px #c5ff78a0;transform:translateY(-50%);animation:introKick 1.45s cubic-bezier(.45,.02,.25,1) .25s forwards}
+.intro-ball svg{width:22px;height:22px}
+.intro-loading{height:3px;width:min(65vw,260px);margin:24px auto 0;background:#ffffff20;border-radius:9px;overflow:hidden}
+.intro-loading:after{content:"";display:block;height:100%;width:100%;background:linear-gradient(90deg,#8cf0ad,#c5ff78);transform:scaleX(0);transform-origin:right;animation:introLoad 2.15s ease forwards}
+.intro-caption{margin-top:12px;color:#8cf0ad;font-size:10px;letter-spacing:2px}
+@keyframes introKick{0%{left:8%;transform:translateY(-50%) rotate(0)}35%{transform:translateY(-50%) rotate(220deg)}75%{left:78%;transform:translateY(-50%) rotate(540deg) scale(1.08)}100%{left:91%;transform:translateY(-50%) rotate(720deg) scale(.25);opacity:0}}
+@keyframes introLoad{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){#intro{transition:none}.intro-ball,.intro-loading:after{animation:none}.intro-ball{left:88%;opacity:0}.intro-loading:after{transform:scaleX(1)}}
 </style></head>
 <body>
+<div id="intro" role="status" aria-label="در حال ورود به 43FOOTBALL">
+ <div class="intro-content">
+  <div class="intro-brand">43<span>FOOTBALL</span></div>
+  <div class="intro-sub">SCHOOL LEAGUE · MATCH DAY</div>
+  <div class="intro-pitch"><div class="intro-goal"></div><div class="intro-ball"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m12 7 4 3-1.5 5h-5L8 10l4-3ZM12 7l.5-4M16 10l4-1M14.5 15l2.5 4M9.5 15 7 19M8 10l-4-1"/></svg></div></div>
+  <div class="intro-loading"></div><div class="intro-caption">THE GAME IS ABOUT TO BEGIN</div>
+ </div>
+</div>
+
 <header class="container">
 <a class="brand" href="#" aria-label="43FOOTBALL"><span class="brand-mark">43</span><span><span class="brand-name">43FOOTBALL</span><span class="brand-sub">سامانه رسمی مسابقات فوتبال مدرسه</span></span></a>
 <nav aria-label="ناوبری اصلی"><button class="active" data-tab="home">خانه</button><button data-tab="teams">تیم‌ها</button><button data-tab="matches">مسابقه‌ها</button><button data-tab="table">جدول لیگ</button></nav>
@@ -76,4 +105,4 @@ filterMatches();const rows=tableStats();document.getElementById("standings").inn
 function filterMatches(){const q=document.getElementById("search").value.trim().toLocaleLowerCase(),f=document.getElementById("filter").value;const list=db.matches.slice().sort((a,b)=>(a.date||"").localeCompare(b.date||"")).filter(m=>(f==="all"||(f==="played"?m.done:!m.done))&&(!q||(teamName(m.h)+" "+teamName(m.a)).toLocaleLowerCase().includes(q)));document.getElementById("matchesList").innerHTML=list.length?list.map(matchCard).join(""):empty("مسابقه‌ای با این مشخصات پیدا نشد.")}
 function show(id){document.querySelectorAll(".content-section").forEach(s=>s.classList.toggle("active",s.id===id));document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.tab)));document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.go)));document.getElementById("search").addEventListener("input",filterMatches);document.getElementById("filter").addEventListener("change",filterMatches);render();
-</script></body></html>
+const intro=document.getElementById("intro");if(intro){const finishIntro=()=>intro.classList.add("hide");window.setTimeout(finishIntro,2550);intro.addEventListener("click",finishIntro,{once:true});}</script></body></html>
