@@ -62,7 +62,7 @@ target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=
 empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 8 8 8m0-8-8 8"/></svg>'
 };
 document.querySelectorAll("[data-icon]").forEach(el=>{el.innerHTML=icons[el.dataset.icon]||""});
-function load(){try{const d=JSON.parse(localStorage.getItem(KEY));return d&&Array.isArray(d.teams)&&Array.isArray(d.matches)?d:{teams:[],matches:[]}}catch(e){return{teams:[],matches:[]}}}
+function load(){const defaults=[701,702,703,704,705].map(id=>({id,name:String(id),grade:"تیم شرکت‌کننده"}));try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.teams)&&Array.isArray(d.matches)){const teams=d.teams.slice();defaults.forEach(t=>{if(!teams.some(x=>Number(x.id)===t.id))teams.push(t)});return{...d,teams}}return{teams:defaults,matches:[]}}catch(e){return{teams:defaults,matches:[]}}}
 const db=load();const fa=n=>Number(n||0).toLocaleString("fa-IR");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const teamName=id=>db.teams.find(t=>Number(t.id)===Number(id))?.name||"تیم نامشخص";
