@@ -122,7 +122,7 @@ document.querySelectorAll('[data-toggle]').forEach(b=>{b.querySelector('span').i
 $('#clock').onclick=()=>{const opening=$('#calendarpanel').hidden;closePanels(opening?'calendarpanel':null);$('#calendarpanel').hidden=!opening};
 document.querySelectorAll('[data-context]').forEach(b=>{b.querySelector('span').innerHTML=ico(({refresh:'view',notes:'notes',settings:'settings',about:'about'})[b.dataset.context]);b.onclick=()=>{const v=b.dataset.context;$('#contextmenu').hidden=true;if(v==='refresh')toast('دسکتاپ تازه‌سازی شد');else openApp(v==='notes'?'notes':v==='settings'?'settings':'about')}});
 document.querySelector('.desktop').addEventListener('contextmenu',e=>{if(e.target.closest('.window,.taskbar,.startmenu'))return;e.preventDefault();const m=$('#contextmenu');m.hidden=false;m.style.left=Math.min(e.clientX,innerWidth-190)+'px';m.style.top=Math.min(e.clientY,innerHeight-180)+'px'});
-document.addEventListener('click',e=>{if(!e.target.closest('#contextmenu')&&!e.target.closest('.desktop'))$('#contextmenu').hidden=true});
+document.addEventListener('click',e=>{if(!e.target.closest('#contextmenu'))$('#contextmenu').hidden=true});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanels();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='e'){e.preventDefault();openApp('explorer')}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='n'){e.preventDefault();openApp('notes')}});
 const c=read('color',null);if(c)setWall(c);
 }
