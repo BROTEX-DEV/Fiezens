@@ -1,0 +1,17 @@
+{
+  "name": "brotex-os-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BROTEX OS Android application wrapper",
+  "scripts": {
+    "build:web": "node scripts/copy-web.mjs",
+    "build:android": "npm run build:web && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}
